@@ -17,6 +17,7 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var favoriteButton: UIButton!
     
     var favorited: Bool?
+    var retweeted: Bool?
     
     var tweet: Tweet! {
         didSet {
@@ -24,6 +25,7 @@ class TweetCell: UITableViewCell {
             usernameLabel.font = UIFont.boldSystemFont(ofSize: 17)
             tweetTextLabel.text = tweet.text
             favorited = tweet.favorited!
+            retweeted = tweet.retweeted
         }
     }
     
@@ -31,11 +33,17 @@ class TweetCell: UITableViewCell {
         if tweet.favorited == false {
             tweet.favorited = true
             favoriteTweet()
-        } else {
-            tweet.favorited = false
-            unfavoriteTweet()
         }
     }
+    
+    @IBAction func didTapRetweet(_ sender: UIButton) {
+        if tweet.retweeted == false {
+            tweet.retweeted = true
+            retweetTweet()
+        }
+    }
+    
+    
     
     func favoriteTweet() {
         APIManager.shared.favorite(tweet) { (tweet: Tweet?, error: Error?) in
@@ -49,6 +57,19 @@ class TweetCell: UITableViewCell {
         }
     }
     
+    func retweetTweet() {
+        APIManager.shared.retweet(tweet) { (tweet: Tweet?, error: Error?) in
+            if let  error = error {
+                print("Error retweeting tweet: \(error.localizedDescription)")
+            } else if let tweet = tweet {
+                print("Successfully favorited the following Tweet: \n\(tweet.text)")
+                tweet.favoriteCount! += 1
+                self.favoriteButton.setImage(#imageLiteral(resourceName: "favor-icon-red"), for: .normal)
+            }
+        }
+    }
+    
+    /*
     func unfavoriteTweet() {
         APIManager.shared.unfavorite(tweet) { (tweet: Tweet?, error: Error?) in
             if let error = error {
@@ -60,7 +81,7 @@ class TweetCell: UITableViewCell {
                 self.favoriteButton.setImage(#imageLiteral(resourceName: "favor-icon"), for: .normal)
             }
         }
-    }
+    } */
     
     
     
