@@ -8,21 +8,21 @@
 
 import UIKit
 
-class TimelineViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class TimelineViewController: UIViewController {
     
     var tweets: [Tweet] = []
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView! {
+        didSet {
+            tableView.dataSource = self
+            tableView.delegate = self
+            tableView.rowHeight = UITableViewAutomaticDimension
+            tableView.estimatedRowHeight = 100
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-        tableView.rowHeight = UITableViewAutomaticDimension
-        tableView.estimatedRowHeight = 100
-        
         setUpRefreshControl()
         
         
@@ -47,6 +47,24 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
         tableView.insertSubview(refreshControl, at: 0)
     }
     
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    
+    @IBAction func didTapLogout(_ sender: Any) {
+        APIManager.shared.logout()
+        //TODO: Present self to login screen
+        User.current = nil
+    }
+}
+
+
+
+extension TimelineViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tweets.count
     }
@@ -61,17 +79,6 @@ class TimelineViewController: UIViewController, UITableViewDelegate, UITableView
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-    }
-    
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    
-    @IBAction func didTapLogout(_ sender: Any) {
-        APIManager.shared.logout()
     }
 }
 

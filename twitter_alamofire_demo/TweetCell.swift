@@ -32,7 +32,13 @@ class TweetCell: UITableViewCell {
     @IBAction func didTapFavorite(_ sender: UIButton) {
         if tweet.favorited == false {
             tweet.favorited = true
+            print("trying to favorite tweet")
             favoriteTweet()
+        } else {
+            tweet.favorited = false
+            print("trying to unfavorite tweet")
+            unfavoriteTweet()
+            
         }
     }
     
@@ -69,7 +75,6 @@ class TweetCell: UITableViewCell {
         }
     }
     
-    /*
     func unfavoriteTweet() {
         APIManager.shared.unfavorite(tweet) { (tweet: Tweet?, error: Error?) in
             if let error = error {
@@ -81,7 +86,7 @@ class TweetCell: UITableViewCell {
                 self.favoriteButton.setImage(#imageLiteral(resourceName: "favor-icon"), for: .normal)
             }
         }
-    } */
+    }
     
     
     
