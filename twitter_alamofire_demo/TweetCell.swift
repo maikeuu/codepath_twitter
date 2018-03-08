@@ -11,25 +11,36 @@ import AlamofireImage
 
 class TweetCell: UITableViewCell {
     
+    //Header outlets
     @IBOutlet weak var usernameLabel: UILabel!
-    @IBOutlet weak var tweetTextLabel: UILabel!
+    @IBOutlet weak var userHandleLabel: UILabel!
+    @IBOutlet weak var timeCreatedLabel: UILabel!
+    
     @IBOutlet weak var replyButton: UIButton!
     @IBOutlet weak var retweetButton: UIButton!
     @IBOutlet weak var favoriteButton: UIButton!
+    
     @IBOutlet weak var userProfilePicture: UIImageView!
+    @IBOutlet weak var tweetTextLabel: UILabel!
     
     var favorited: Bool?
     var retweeted: Bool?
     
     var tweet: Tweet! {
         didSet {
+            //User object dependent views
             usernameLabel.text = tweet.user.name
             usernameLabel.font = UIFont.boldSystemFont(ofSize: 17)
+            userProfilePicture.af_setImage(withURL: tweet.user.profilePictureURL)
+            userHandleLabel.text = "@\(tweet.user.screenName)"
+            userHandleLabel.textColor = .gray
+            
+            //Tweet object dependent views
             tweetTextLabel.text = tweet.text
             favorited = tweet.favorited!
             retweeted = tweet.retweeted
-            userProfilePicture.af_setImage(withURL: tweet.profilePictureURL)
-            
+            timeCreatedLabel.text = "•" + tweet.createdAtString
+            timeCreatedLabel.textColor = .gray
             updateUI()
         }
     }
@@ -98,8 +109,9 @@ class TweetCell: UITableViewCell {
             if let  error = error {
                 print("Error retweeting tweet: \(error.localizedDescription)")
             } else if let tweet = tweet {
-                print("Successfully favorited the following Tweet: \n\(tweet.text)")
+                print("Successfully retweeted the following Tweet: \n\(tweet.text)")
                 tweet.favoriteCount! += 1
+                self.updateUI()
             }
         }
     }

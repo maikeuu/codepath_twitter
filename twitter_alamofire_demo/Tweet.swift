@@ -7,23 +7,30 @@
 //
 
 import Foundation
+import DateToolsSwift
 
 class Tweet {
     
-    // MARK: Properties
+    // MARK: Tweet Properties
+    //Properties for Tweet Objects
     var id: Int64 // For favoriting, retweeting & replying
     var text: String // Text content of tweet
     var favoriteCount: Int? // Update favorite count label
     var favorited: Bool? // Configure favorite button
     var retweetCount: Int // Update favorite count label
     var retweeted: Bool // Configure retweet button
-    var user: User // Contains name, screenname, etc. of tweet author
+    
+    //Properties for setting the date
     var createdAtString: String // Display date
-    var profilePictureString: String //String of the profile picture of the tweet
-    var profilePictureURL: URL // URL conversion from string above of the profile picture of tweet
+    
+    
+    //Properties to associate the tweet with a user
+    var user: User // Contains name, screenname, etc. of tweet author
+    
     
     // MARK: - Create initializer with dictionary
     init(dictionary: [String: Any]) {
+        //Home Tweets Initialization
         id = dictionary["id"] as! Int64
         text = dictionary["text"] as! String
         favoriteCount = dictionary["favorite_count"] as? Int
@@ -31,15 +38,11 @@ class Tweet {
         retweetCount = dictionary["retweet_count"] as! Int
         retweeted = dictionary["retweeted"] as! Bool
         
-        print(dictionary)
-        
+        //User Object Initialization
         let user = dictionary["user"] as! [String: Any]
         self.user = User(dictionary: user)
         
-        profilePictureString = user["profile_image_url"] as! String
-        profilePictureURL = URL(string: profilePictureString)!
-
-        
+        //Date initialization
         let createdAtOriginalString = dictionary["created_at"] as! String
         let formatter = DateFormatter()
         // Configure the input format to parse the date string
@@ -50,8 +53,7 @@ class Tweet {
         formatter.dateStyle = .short
         formatter.timeStyle = .none
         // Convert Date to String
-        createdAtString = formatter.string(from: date)
-        
+        createdAtString = date.shortTimeAgoSinceNow
         
     }
 }

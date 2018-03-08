@@ -10,7 +10,12 @@ import Foundation
 
 class User {
     
+    
+    //User Properties
     var name: String
+    var profilePictureString: String //String of the profile picture of the tweet
+    var profilePictureURL: URL // URL conversion from string above of the profile picture of tweet
+    var screenName: String //Handle of User
     
     //For user persistance
     var dictionary: [String: Any]?
@@ -43,5 +48,8 @@ class User {
     init(dictionary: [String: Any]) {
         self.dictionary = dictionary
         name = dictionary["name"] as! String
+        profilePictureString = dictionary["profile_image_url"] as! String
+        profilePictureURL = URL(string: profilePictureString)!
+        screenName = dictionary["screen_name"] as! String
     }
 }
