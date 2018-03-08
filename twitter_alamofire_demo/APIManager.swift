@@ -14,16 +14,19 @@ import KeychainAccess
 
 class APIManager: SessionManager {
     
-    // MARK: TODO: Add App Keys
     static let consumerKey = "n5cqhY7iw5kPPtEbmg8bsHn6F"
     static let consumerSecret = "sQm2RrTZBkw74XrAxmkatLO17LMT8ArDmIpq3UkPgcF4PlmZBs"
     static let requestTokenURL = "https://api.twitter.com/oauth/request_token"
     static let authorizeURL = "https://api.twitter.com/oauth/authorize"
     static let accessTokenURL = "https://api.twitter.com/oauth/access_token"
-    
     static let callbackURLString = "alamoTwitter://"
     
-    // MARK: Twitter API methods
+    
+    /**
+        This method uses oauthManager to attempt to authorize the application to allow access to a specific twitter user's credentials.
+        If the credentials succeed, then current User of the application is set and the user does not have to approve of logging in again.
+     
+    */
     func login(success: @escaping () -> (), failure: @escaping (Error?) -> ()) {
         
         // Add callback url to open app when returning from Twitter login on web
@@ -32,7 +35,6 @@ class APIManager: SessionManager {
             
             // Save Oauth tokens
             self.save(credential: credential)
-            
             self.getCurrentAccount(completion: { (user, error) in
                 if let error = error {
                     failure(error)
@@ -47,10 +49,11 @@ class APIManager: SessionManager {
         }
     }
     
+    /**
+        This method logs out the user by clearing the application's User.current property and sends a notification that the user did log out.
+    */
     func logout() {
         clearCredentials()
-        
-        // TODO: Clear current user by setting it to nil
         User.current = nil
         NotificationCenter.default.post(name: NSNotification.Name("didLogout"), object: nil)
     }
@@ -72,13 +75,18 @@ class APIManager: SessionManager {
                 }
         }
     }
-        
+    
+    
+    /**
+        This method gets the tweets of the User.current's home time line.
+        ## In the case of success, the tweets get stored as Tweet(dictionary: dictionary)
+     */
     func getHomeTimeLine(completion: @escaping ([Tweet]?, Error?) -> ()) {
-
         // This uses tweets from disk to avoid hitting rate limit. Comment out if you want fresh
         // tweets,
         if let data = UserDefaults.standard.object(forKey: "hometimeline_tweets") as? Data {
             let tweetDictionaries = NSKeyedUnarchiver.unarchiveObject(with: data) as! [[String: Any]]
+//            print(tweetDictionaries)
             let tweets = tweetDictionaries.flatMap({ (dictionary) -> Tweet in
                 Tweet(dictionary: dictionary)
             })
@@ -86,7 +94,7 @@ class APIManager: SessionManager {
             completion(tweets, nil)
             return
         }
-
+ 
         request(URL(string: "https://api.twitter.com/1.1/statuses/home_timeline.json")!, method: .get)
             .validate()
             .responseJSON { (response) in
@@ -101,7 +109,6 @@ class APIManager: SessionManager {
                         completion(nil, error)
                         return
                     }
-
                     let data = NSKeyedArchiver.archivedData(withRootObject: tweetDictionaries)
                     UserDefaults.standard.set(data, forKey: "hometimeline_tweets")
                     UserDefaults.standard.synchronize()
@@ -114,9 +121,7 @@ class APIManager: SessionManager {
         }
     }
     
-    // MARK: TODO: Favorite a Tweet
     func favorite(_ tweet: Tweet, completion: @escaping (Tweet?, Error?) -> ()) {
-        
         let urlString = "https://api.twitter.com/1.1/favorites/create.json"
         let parameters = ["id": tweet.id]
         request(urlString, method: .post, parameters: parameters, encoding: URLEncoding.queryString)
@@ -126,15 +131,12 @@ class APIManager: SessionManager {
                 let tweetDictionary = response.result.value as? [String: Any] {
                 let tweet = Tweet(dictionary: tweetDictionary)
                 completion(tweet, nil)
-                print("response is successful")
             } else {
-                print("else statement")
                 completion(nil, response.result.error)
             }
         }
     }
     
-    // MARK: TODO: Un-Favorite a Tweet
     
     func unfavorite(_ tweet: Tweet, completion: @escaping (Tweet?, Error?) -> ()) {
         let urlString = "https://api.twitter.com/1.1/favorites/destroy.json"
@@ -150,7 +152,6 @@ class APIManager: SessionManager {
         }
     }
     
-    // MARK: TODO: Retweet
     func retweet(_ tweet: Tweet, completion: @escaping (Tweet?, Error?) -> ()) {
         let baseURLString = "https://api.twitter.com/1.1/statuses/retweet/"
         let parameters = ["id": tweet.id]
