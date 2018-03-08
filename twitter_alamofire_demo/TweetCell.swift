@@ -28,6 +28,8 @@ class TweetCell: UITableViewCell {
             tweetTextLabel.text = tweet.text
             favorited = tweet.favorited!
             retweeted = tweet.retweeted
+            userProfilePicture.af_setImage(withURL: tweet.profilePictureURL)
+            
             updateUI()
         }
     }
@@ -59,9 +61,9 @@ class TweetCell: UITableViewCell {
         }
         //Tweets Retweeted case
         if tweet.retweeted == true {
-            self.favoriteButton.setImage(#imageLiteral(resourceName: "retweet-icon-green"), for: .normal)
+            self.retweetButton.setImage(#imageLiteral(resourceName: "retweet-icon-green"), for: .normal)
         } else {
-            self.favoriteButton.setImage(#imageLiteral(resourceName: "retweet-icon"), for: .normal)
+            self.retweetButton.setImage(#imageLiteral(resourceName: "retweet-icon"), for: .normal)
         }
     }
     

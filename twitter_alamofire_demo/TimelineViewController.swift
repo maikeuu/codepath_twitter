@@ -24,8 +24,6 @@ class TimelineViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpRefreshControl()
-        
-        
     }
     
     func refreshTweets(_ refreshControl: UIRefreshControl) {

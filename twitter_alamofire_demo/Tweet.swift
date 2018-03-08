@@ -19,21 +19,26 @@ class Tweet {
     var retweeted: Bool // Configure retweet button
     var user: User // Contains name, screenname, etc. of tweet author
     var createdAtString: String // Display date
-    var profilePictureURL: String //String of the profile picture of the tweet
+    var profilePictureString: String //String of the profile picture of the tweet
+    var profilePictureURL: URL // URL conversion from string above of the profile picture of tweet
     
     // MARK: - Create initializer with dictionary
     init(dictionary: [String: Any]) {
-        print(dictionary)
         id = dictionary["id"] as! Int64
         text = dictionary["text"] as! String
         favoriteCount = dictionary["favorite_count"] as? Int
         favorited = dictionary["favorited"] as? Bool
         retweetCount = dictionary["retweet_count"] as! Int
         retweeted = dictionary["retweeted"] as! Bool
-        profilePictureURL = dictionary["profile_image_url"] as! String
+        
+        print(dictionary)
         
         let user = dictionary["user"] as! [String: Any]
         self.user = User(dictionary: user)
+        
+        profilePictureString = user["profile_image_url"] as! String
+        profilePictureURL = URL(string: profilePictureString)!
+
         
         let createdAtOriginalString = dictionary["created_at"] as! String
         let formatter = DateFormatter()
