@@ -66,6 +66,10 @@ class TimelineViewController: UIViewController {
         User.current = nil
         present(LoginViewController(), animated: true, completion: nil)
     }
+    @IBAction func didTapCompose(_ sender: Any) {
+        
+        
+    }
 }
 
 
