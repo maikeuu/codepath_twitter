@@ -22,6 +22,7 @@ class Tweet {
     
     //Properties for setting the date
     var createdAtString: String // Display date
+    var timeAgoSinceNow: String // Display when tweet was created
     
     
     //Properties to associate the tweet with a user
@@ -53,7 +54,9 @@ class Tweet {
         formatter.dateStyle = .short
         formatter.timeStyle = .none
         // Convert Date to String
-        createdAtString = date.shortTimeAgoSinceNow
+        timeAgoSinceNow = date.shortTimeAgoSinceNow
+        createdAtString = date.format(with: "M/d/yy, HH:mm a")
+        
         
     }
 }

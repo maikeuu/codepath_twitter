@@ -45,18 +45,26 @@ class TimelineViewController: UIViewController {
         tableView.insertSubview(refreshControl, at: 0)
     }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let cell = sender as! UITableViewCell
+        if let indexPath = tableView.indexPath(for: cell) {
+            let tweet = tweets[indexPath.row]
+            let vc = segue.destination as! TweetDetailViewController
+            vc.tweet = tweet
+        }
+        
+    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    
+    //TODO: Fix this to present the proper view controller
     @IBAction func didTapLogout(_ sender: Any) {
         APIManager.shared.logout()
-        //TODO: Present self to login screen
         User.current = nil
+        present(LoginViewController(), animated: true, completion: nil)
     }
 }
 

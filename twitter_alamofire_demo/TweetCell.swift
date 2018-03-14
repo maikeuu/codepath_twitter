@@ -17,8 +17,12 @@ class TweetCell: UITableViewCell {
     @IBOutlet weak var timeCreatedLabel: UILabel!
     
     @IBOutlet weak var replyButton: UIButton!
+    
     @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var retweetCountLabel: UILabel!
+    
     @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var favoriteCountLabel: UILabel!
     
     @IBOutlet weak var userProfilePicture: UIImageView!
     @IBOutlet weak var tweetTextLabel: UILabel!
@@ -39,7 +43,7 @@ class TweetCell: UITableViewCell {
             tweetTextLabel.text = tweet.text
             favorited = tweet.favorited!
             retweeted = tweet.retweeted
-            timeCreatedLabel.text = "•" + tweet.createdAtString
+            timeCreatedLabel.text = "•" + tweet.timeAgoSinceNow
             timeCreatedLabel.textColor = .gray
             updateUI()
         }
@@ -76,6 +80,16 @@ class TweetCell: UITableViewCell {
         } else {
             self.retweetButton.setImage(#imageLiteral(resourceName: "retweet-icon"), for: .normal)
         }
+        if tweet.retweetCount > 0 {
+            retweetCountLabel.text = "\(tweet.retweetCount)"
+        } else {
+            retweetCountLabel.text = ""
+        }
+        if tweet.favoriteCount! > 0 {
+            favoriteCountLabel.text = "\(tweet.favoriteCount!)"
+        } else {
+            favoriteCountLabel.text = ""
+        }
     }
     
     
@@ -86,6 +100,7 @@ class TweetCell: UITableViewCell {
             } else if let tweet = tweet {
                 print("Successfully favorited the following Tweet: \n\(tweet.text)")
                 tweet.favoriteCount! += 1
+                self.favoriteCountLabel.text = "\(tweet.favoriteCount! + 1)"
                 self.updateUI()
             }
         }
@@ -98,7 +113,7 @@ class TweetCell: UITableViewCell {
             } else if let tweet = tweet {
                 print("Successfully unfavorited the following Tweet: \n\(tweet.text)")
                 tweet.favorited = false
-                tweet.favoriteCount! -= 1
+                self.favoriteCountLabel.text = "\(tweet.favoriteCount! - 1)"
                 self.updateUI()
             }
         }
