@@ -13,9 +13,16 @@ class User {
     
     //User Properties
     var name: String
-    var profilePictureString: String //String of the profile picture of the tweet
-    var profilePictureURL: URL // URL conversion from string above of the profile picture of tweet
     var screenName: String //Handle of User
+    var followersCount: Int
+    var followingCount: Int
+    var tweetsCount: Int
+    
+    var profilePictureString: String //String of the profile picture
+    var profilePictureURL: URL // URL conversion from string above of the profile picture of tweet
+    
+    var profileBackgroundString: String? // String of profile background image
+    var profileBackgroundURL: URL? // URL conversion from profileBackroundURL
     
     //For user persistance
     var dictionary: [String: Any]?
@@ -48,8 +55,12 @@ class User {
     init(dictionary: [String: Any]) {
         self.dictionary = dictionary
         name = dictionary["name"] as! String
+        screenName = dictionary["screen_name"] as! String
         profilePictureString = dictionary["profile_image_url"] as! String
         profilePictureURL = URL(string: profilePictureString)!
-        screenName = dictionary["screen_name"] as! String
+        
+        followersCount = dictionary["followers_count"] as! Int
+        followingCount = dictionary["friends_count"] as! Int
+        tweetsCount = dictionary["statuses_count"] as! Int 
     }
 }
